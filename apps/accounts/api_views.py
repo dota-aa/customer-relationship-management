@@ -186,12 +186,12 @@ class UserProfileView(APIView):
 
     def get(self, request):
         user = request.user
-        serializer = UserProfileSerializer(instance=user)
-        serializer.is_valid(raise_exception=True)
+        serializer = UserProfileSerializer(instance=user.profile)
         return Response(data=serializer.data)
 
     def patch(self, request):
         user = request.user
-        serializer = UserProfileSerializer(instance=user, data=request.data, partial=True)
+        serializer = UserProfileSerializer(instance=user.profile, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        return Response(data=serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
+        serializer.save()
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

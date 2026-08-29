@@ -6,13 +6,14 @@ from .models import User, Profile
 
 class UserSerializer(serializers.ModelSerializer):
     is_admin = serializers.BooleanField(source='is_staff', read_only=True)
+    registered_date = serializers.DateTimeField(source='date_joined', format='%Y/%m/%d - %H:%M:%S')
 
     class Meta:
         model = User
         fields = (
             'username',
             'email',
-            'date_joined',
+            'registered_date',
             'last_login',
             'is_active',
             'is_admin',
@@ -82,12 +83,12 @@ class ResetPasswordSerializer(serializers.Serializer):
         return attrs
 
 
-class UserProfileSerializer(serializers.Serializer):
-    user_info = serializers.ModelSerializer(read_only=True)
+class UserProfileSerializer(serializers.ModelSerializer):
+    user_info = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ('full_name', 'job', 'birth_date', 'avatar', 'bio')
+        fields = ('full_name', 'job', 'birth_date', 'avatar', 'bio', 'user_info')
 
     def get_user_info(self, obj):
         user = User.objects.get(id=obj.user.id)
