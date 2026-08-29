@@ -52,6 +52,24 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    token = serializers.CharField(write_only=True)
+    uidb64 = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(min_length=8, max_length=128)
+    confirm_password = serializers.CharField(min_length=8, max_length=128)
+
+    def validate(self, attrs):
+        new_password = attrs['new_password']
+        confirm_password = attrs['confirm_password']
+        if new_password and confirm_password and new_password != confirm_password:
+            raise serializers.ValidationError('Passwords must match.')
+        return attrs
+
+
 class UserProfileSerializer(serializers.Serializer):
     user_info = serializers.ModelSerializer(read_only=True)
 

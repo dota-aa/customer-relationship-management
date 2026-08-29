@@ -1,4 +1,7 @@
 Django
+django-environ
 djangorestframework
 djangorestframework-simplejwt
 pillow
+pydantic
+pydantic[email]

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* BEM: Block: email-container */
+        .email-container {
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            background-color: #f8fafc;
+            padding: 40px 20px;
+            direction: rtl;
+        }
+
+        /* BEM: Block: email-card */
+        .email-card {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .email-card__header {
+            background-color: #f97316; /* Orange Primary */
+            padding: 40px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .email-card__header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .email-card__body {
+            padding: 40px;
+            color: #334155;
+            line-height: 1.8;
+            text-align: right;
+        }
+
+        /* BEM: Element: button | Modifier: --primary */
+        .email-card__button {
+            display: inline-block;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            transition: background-color 0.3s ease;
+        }
+
+        .email-card__button--primary {
+            background-color: #f97316; /* Orange Primary */
+            color: #ffffff;
+        }
+
+        /* BEM: Element: warning | Modifier: --alert */
+        .email-card__warning {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .email-card__warning--alert {
+            background-color: #fff7ed; /* Light Orange Tint */
+            border-right: 1px solid #f3693d;
+            color: #9a3412; /* Darker Orange/Brown */
+        }
+
+        .email-card__footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+    {% block content %} {% endblock %}
+</body>
+</html>

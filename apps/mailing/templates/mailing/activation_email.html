@@ -1,0 +1,38 @@
+{% extends 'mailing/base_email.html' %}
+
+{% block content %}
+
+    <div class="email-container">
+        <table class="email-card" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="email-card__header">
+                    <h1>خوش آمدید!</h1>
+                </td>
+            </tr>
+            <tr>
+                <td class="email-card__body">
+                    <p>سلام <strong>{{ user.username }}</strong> عزیز،</p>
+                    <p>از اینکه به جمع ما پیوستید بسیار خوشحالیم! برای اینکه بتوانید از تمامی امکانات پنل کاربری خود استفاده کنید، لازم است حساب خود را تایید کنید.</p>
+
+                    <div style="text-align: center;">
+                        <a href="{{ activation_link }}" class="email-card__button email-card__button--primary">تایید و فعال‌سازی حساب</a>
+                    </div>
+
+                    <p>اگر دکمه بالا کار نمی‌کند، می‌توانیداز لینک زیر استفاده کنید:<p>
+                    <small style="color: #64748b; word-break: break-all;">{{ activation_link }}</small></p>
+
+                    <div class="email-card__warning email-card__warning--alert">
+                        <strong>🔒 نکته امنیتی:</strong> این لینک اختصاصی برای شما ساخته شده و تنها تا <strong>10 دقیقه</strong> معتبر است. اگر این درخواست توسط شما انجام نشده، لطفا این ایمیل را نادیده بگیرید.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="email-card__footer">
+                    <p>© ۲۰۲۶ تمامی حقوق محفوظ است.</p>
+                    <p>این یک ایمیل خودکار است؛ لطفا به آن پاسخ ندهید.</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+{% endblock %}

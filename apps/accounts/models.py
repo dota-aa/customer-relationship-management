@@ -6,7 +6,7 @@ from utils import nb
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
 
 
 class Profile(models.Model):

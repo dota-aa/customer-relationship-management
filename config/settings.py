@@ -12,9 +12,13 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -48,6 +52,7 @@ INSTALLED_APPS = [
 
     # Project Apps
     'apps.accounts.apps.AccountsConfig',
+    'apps.mailing.apps.MailingConfig',
 
 ]
 
@@ -66,7 +71,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,11 +139,26 @@ STATIC_URL = 'static/'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
+# smtp config
+HOST = env('EMAIL_HOST')
+PORT = env('EMAIL_PORT')
+USE_TLS = env.bool('EMAIL_USE_TLS', default='if you want to use tls protocol')
+HOST_USER = env('EMAIL_HOST_USER', default='your email')
+HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='your app password')
+
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS': {
+            'host': HOST,
+            'port': PORT,
+            'use_tls': USE_TLS,
+            'username': HOST_USER,
+            'password': HOST_PASSWORD,
+        },
     },
 }
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
