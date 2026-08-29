@@ -11,6 +11,7 @@ from .serializers import (
     UserProfileSerializer,
     ForgotPasswordSerializer,
     ResetPasswordSerializer,
+    ChangePasswordSerializer,
 )
 from .services import (
     create_user,
@@ -20,7 +21,6 @@ from .services import (
     change_user_password,
 )
 from .selectors import get_user_by_email
-
 
 
 class UserRegisterView(APIView):
@@ -54,6 +54,9 @@ class CustomTokenObtainView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
+# ---------------------------------------------------------------------------------------
+# --change password--
+# ---------------------------------------------------------------------------------------
 class UserChangePasswordView(APIView):
     """
     An endpoint for authenticated users to change their current password.
@@ -70,7 +73,13 @@ class UserChangePasswordView(APIView):
         - 400 Bad Request: password mismatch, or validation errors.
         - 401 Unauthorized: User is not authenticated.
     """
-    pass
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        change_user_password(user=request.user, password=serializer.validated_data['new_password'])
+        return Response(data={'message': 'password changed successfully.'})
 
 
 # ---------------------------------------------------------------------------------------
