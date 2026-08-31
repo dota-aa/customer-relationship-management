@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     # Django Apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -49,6 +50,9 @@ INSTALLED_APPS = [
 
     # core
     'core.apps.CoreConfig',
+
+    # utils
+    'utils.apps.UtilsConfig',
 
     # Project Apps
     'apps.accounts.apps.AccountsConfig',
@@ -144,10 +148,12 @@ MEDIA_URL = 'media/'
 
 # arvan s3 Object storage
 
-AWS_S3_ACCESS_KEY_ID = env('AWS_S3_ACCESS_KEY_ID', default='your s3 access key id')
-AWS_S3_SECRET_ACCESS_KEY = env('AWS_S3_SECRET_ACCESS_KEY', default='your s3 secret key')
+AWS_SERVICE_NAME = env('AWS_SERVICE_NAME')
+AWS_S3_ACCESS_KEY_ID = env('AWS_S3_ACCESS_KEY_ID', default='your-s3-access-key-id')
+AWS_S3_SECRET_ACCESS_KEY = env('AWS_S3_SECRET_ACCESS_KEY', default='your-s3-secret-key')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='your-exact-bucket-name')
 AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
 AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE')
 
 STORAGES = {
@@ -160,9 +166,9 @@ STORAGES = {
             'endpoint_url': AWS_S3_ENDPOINT_URL,
             'bucket_name': AWS_STORAGE_BUCKET_NAME,
             'file_overwrite': AWS_S3_FILE_OVERWRITE,
+            "region_name": AWS_S3_REGION_NAME,
             "addressing_style": "path",
             "signature_version": "s3v4",
-            "region_name": "ir-tbz-sh1",
             "querystring_auth": False,
         },
     },

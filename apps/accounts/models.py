@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-from utils import nb
+from utils.texts import nb
 
 
 class User(AbstractUser):
