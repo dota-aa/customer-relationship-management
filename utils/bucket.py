@@ -13,7 +13,7 @@ class Bucket:
             region_name=settings.AWS_S3_REGION_NAME,
         )
 
-    def generate_download_url(self, key, expiration=3600):
+    def generate_download_url(self, *, key, expiration=3600):
         return self.conn.generate_presigned_url(
             'get_object',
             Params={

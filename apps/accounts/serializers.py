@@ -3,6 +3,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 from .models import User, Profile
+from utils.bucket import bucket
 
 class UserSerializer(serializers.ModelSerializer):
     is_admin = serializers.BooleanField(source='is_staff')
@@ -86,11 +87,18 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user_info = serializers.SerializerMethodField(read_only=True)
+    image = serializers.ImageField(source='avatar', write_only=True)
+    image_path = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
-        fields = ('full_name', 'job', 'birth_date', 'avatar', 'bio', 'user_info')
+        fields = ('full_name', 'job', 'birth_date', 'image', 'image_path', 'bio', 'user_info')
 
     def get_user_info(self, obj):
         user = User.objects.get(id=obj.user.id)
         return UserSerializer(instance=user).data  # serialize
+
+    def get_image_path(self, obj):
+        if obj.avatar:
+            return bucket.generate_download_url(key=obj.avatar.name, expiration=86400)
+        return None
