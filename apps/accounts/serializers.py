@@ -5,7 +5,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, Profile
 
 class UserSerializer(serializers.ModelSerializer):
-    is_admin = serializers.BooleanField(source='is_staff', read_only=True)
+    is_admin = serializers.BooleanField(source='is_staff')
     registered_date = serializers.DateTimeField(source='date_joined', format='%Y/%m/%d - %H:%M:%S')
 
     class Meta:
@@ -19,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_admin',
             'is_superuser',
         )
+        read_only_fields = ['is_superuser', 'registered_date']
 
 
 class UserRegisterSerializer(serializers.Serializer):

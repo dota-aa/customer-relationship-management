@@ -1,4 +1,5 @@
 from django.urls import path, include
+from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from . import api_views
@@ -14,7 +15,6 @@ jwt_urlpatterns = [
     path('reset-password/', api_views.ForgotPasswordView.as_view()),
     path('reset-password/verify/<uidb64>/<token>/', api_views.CheckResetPasswordTokenView.as_view()),
     path('reset-password/confirm/', api_views.ResetPasswordView.as_view()),
-
 ]
 
 
@@ -22,3 +22,8 @@ app_name = 'accounts'
 urlpatterns = [
     path('auth/', include(jwt_urlpatterns)),
 ]
+
+
+router = SimpleRouter()
+router.register('users', api_views.UserManagementView)
+urlpatterns += router.urls

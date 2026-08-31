@@ -1,7 +1,9 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework import status
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
+from rest_framework import status, viewsets
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import (
@@ -20,7 +22,10 @@ from .services import (
     send_reset_password_email,
     change_user_password,
 )
-from .selectors import get_user_by_email
+from .selectors import (
+    get_user_by_email,
+    get_users
+)
 
 
 class UserRegisterView(APIView):
@@ -183,6 +188,7 @@ class ResetPasswordView(APIView):
 # ---------------------------------------------------------------------------------------
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
         user = request.user
@@ -195,3 +201,29 @@ class UserProfileView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class UserManagementView(viewsets.ViewSet):
+    permission_classes = [IsAdminUser]
+    queryset = get_users()
+
+    def list(self, request):
+        serializer = UserSerializer(instance=self.queryset, many=True)
+        return Response(data=serializer.data)
+
+    def retrieve(self, request, pk=None):
+        user = get_object_or_404(self.queryset, id=pk)
+        serializer = UserSerializer(instance=user)
+        return Response(data=serializer.data)
+
+    def partial_update(self, request, pk=None):
+        user = get_object_or_404(self.queryset, id=pk)
+        serializer = UserSerializer(instance=user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data)
+
+    def destroy(self, request, pk):
+        user = get_object_or_404(self.queryset, id=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
