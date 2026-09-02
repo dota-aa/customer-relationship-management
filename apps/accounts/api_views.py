@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from rest_framework import status, viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.db import transaction
 
 from .serializers import (
     UserSerializer,
@@ -24,7 +25,8 @@ from .services import (
 )
 from .selectors import (
     get_user_by_email,
-    get_users
+    get_users,
+    get_profile_for_update
 )
 
 
@@ -196,10 +198,11 @@ class UserProfileView(APIView):
         return Response(data=serializer.data)
 
     def patch(self, request):
-        user = request.user
-        serializer = UserProfileSerializer(instance=user.profile, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        with transaction.atomic():
+            profile = get_profile_for_update(user=request.user)
+            serializer = UserProfileSerializer(instance=profile, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 

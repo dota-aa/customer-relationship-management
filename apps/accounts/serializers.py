@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-
 from .models import User, Profile
+from .validators import validate_avatar, process_image
 from utils.bucket import bucket
 
 class UserSerializer(serializers.ModelSerializer):
@@ -86,17 +86,36 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    user_info = serializers.SerializerMethodField(read_only=True)
-    image = serializers.ImageField(source='avatar', write_only=True)
-    image_path = serializers.SerializerMethodField()
+    user_info = serializers.SerializerMethodField()
+    image = serializers.ImageField(source='avatar', write_only=True, required=False)
+    image_path = serializers.SerializerMethodField(read_only=True)
+    delete_image = serializers.BooleanField(write_only=True, default=False)
 
     class Meta:
         model = Profile
-        fields = ('full_name', 'job', 'birth_date', 'image', 'image_path', 'bio', 'user_info')
+        fields = ('full_name', 'job', 'birth_date', 'image', 'image_path', 'delete_image', 'bio', 'user_info')
+
+    def validate_image(self, value):
+        if value:
+            validate_avatar(value)
+            return process_image(value)
+        return value
+
+    def update(self, instance, validated_data):
+        delete_image = validated_data.pop('delete_image', False)
+        new_image = validated_data.get('avatar')  # the source of image field == avatar
+
+        if instance.avatar and delete_image:
+            instance.avatar.delete(save=False)
+            instance.avatar = None  # it will be saved later by the super method
+
+        elif new_image and instance.avatar and new_image != instance.avatar:
+            instance.avatar.delete(save=False)
+
+        return super().update(instance, validated_data)
 
     def get_user_info(self, obj):
-        user = User.objects.get(id=obj.user.id)
-        return UserSerializer(instance=user).data  # serialize
+        return UserSerializer(instance=obj.user).data  # serialize
 
     def get_image_path(self, obj):
         if obj.avatar:
