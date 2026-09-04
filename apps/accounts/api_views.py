@@ -206,7 +206,7 @@ class UserProfileView(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-class UserManagementView(viewsets.ViewSet):
+class UserManagementView(viewsets.GenericViewSet):
     permission_classes = [IsAdminUser]
     queryset = get_users()
 
