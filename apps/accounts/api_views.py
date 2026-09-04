@@ -28,6 +28,7 @@ from .selectors import (
     get_users,
     get_profile_for_update
 )
+from core.pagination import StandardPagination
 
 
 class UserRegisterView(APIView):
@@ -209,6 +210,7 @@ class UserProfileView(APIView):
 class UserManagementView(viewsets.GenericViewSet):
     permission_classes = [IsAdminUser]
     queryset = get_users()
+    pagination_class = StandardPagination
 
     def list(self, request):
         serializer = UserSerializer(instance=self.queryset, many=True)
