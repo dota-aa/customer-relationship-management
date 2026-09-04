@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     # Project Apps
     'apps.accounts.apps.AccountsConfig',
     'apps.mailing.apps.MailingConfig',
+    'apps.leads.apps.LeadsConfig',
 
 ]
 
