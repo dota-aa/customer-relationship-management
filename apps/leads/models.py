@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.models import BaseModel
+from utils.texts import nb
 
 
 class Lead(BaseModel):
@@ -21,9 +22,9 @@ class Lead(BaseModel):
 
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=11)
-    company = models.CharField(max_length=64)
+    email = models.EmailField(unique=True, **nb)
+    phone_number = models.CharField(max_length=11, **nb)
+    company = models.CharField(max_length=64, **nb)
 
     source = models.CharField(
         choices=LeadSource,

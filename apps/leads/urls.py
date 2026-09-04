@@ -1,7 +1,11 @@
-from django.urls import path
+from rest_framework.routers import SimpleRouter
 
+from . import api_views
 
 app_name = 'leads'
-urlpatterns = [
+urlpatterns = []
 
-]
+
+router = SimpleRouter()
+router.register('', api_views.LeadViewSet)
+urlpatterns += router.urls
