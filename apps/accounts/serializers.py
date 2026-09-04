@@ -5,6 +5,7 @@ from .models import User, Profile
 from .validators import validate_avatar, process_image
 from utils.bucket import bucket
 
+
 class UserSerializer(serializers.ModelSerializer):
     is_admin = serializers.BooleanField(source='is_staff')
     registered_date = serializers.DateTimeField(source='date_joined', format='%Y/%m/%d - %H:%M:%S')
