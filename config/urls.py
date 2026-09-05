@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('apps.accounts.urls', namespace='accounts')),
     path('api/leads/', include('apps.leads.urls', namespace='leads')),
+    path('api/contacts/', include('apps.contacts.urls', namespace='contacts')),
 ]
 
 

@@ -17,7 +17,8 @@ class LeadViewSet(viewsets.ModelViewSet):
         # TODO: add Notification
 
     def perform_update(self, serializer):
-        serializer.save()
+        lead = serializer.save()
+        # TODO: check if lead status changed to converted to make a contact
         # TODO: add Notification
 
     def perform_destroy(self, instance):

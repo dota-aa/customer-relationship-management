@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'apps.accounts.apps.AccountsConfig',
     'apps.mailing.apps.MailingConfig',
     'apps.leads.apps.LeadsConfig',
+    'apps.contacts.apps.ContactsConfig',
 
 ]
 

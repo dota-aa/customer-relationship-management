@@ -107,7 +107,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         new_image = validated_data.get('avatar')  # the source of image field == avatar
 
         if instance.avatar and delete_image:
-            instance.avatar.delete(save=False)
+            instance.avatar.delete(save=False)  # Delete from s3 object storage to prevent orphanage files
             instance.avatar = None  # it will be saved later by the super method
 
         elif new_image and instance.avatar and new_image != instance.avatar:
