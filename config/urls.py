@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/', include('apps.accounts.urls', namespace='accounts')),
     path('api/leads/', include('apps.leads.urls', namespace='leads')),
     path('api/contacts/', include('apps.contacts.urls', namespace='contacts')),
+    path('api/deals/', include('apps.deals.urls', namespace='deals')),
 ]
 
 

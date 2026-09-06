@@ -1,6 +1,7 @@
 Django
 django-storages
 django-environ
+django-filter
 djangorestframework
 djangorestframework-simplejwt
 pillow

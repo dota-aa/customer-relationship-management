@@ -13,6 +13,7 @@ class Contact(BaseModel):
         ACTIVE = 'active', 'Active'
         INACTIVE = 'inactive', 'Inactive'
         LEAD = 'lead', 'Lead'
+        CUSTOMER = 'customer', 'Customer'
 
     first_name = models.CharField(max_length=225)
     last_name = models.CharField(max_length=225, **nb)
