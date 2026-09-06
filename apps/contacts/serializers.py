@@ -9,7 +9,8 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = (
             'id',
-            'full_name',
+            'first_name',
+            'last_name',
             'company',
             'email',
             'phone_number',
@@ -22,9 +23,8 @@ class ContactSerializer(serializers.ModelSerializer):
 
     def get_creator(self, obj):
         creator = obj.created_by
-        first_name = creator.first_name
-        last_name = creator.last_name
+        username = creator.username
 
-        if first_name and last_name:
-            return f'{first_name} {last_name}'
+        if username:
+            return f'{username}'
         return creator.email

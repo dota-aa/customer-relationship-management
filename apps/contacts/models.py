@@ -14,8 +14,9 @@ class Contact(BaseModel):
         INACTIVE = 'inactive', 'Inactive'
         LEAD = 'lead', 'Lead'
 
-    full_name = models.CharField(max_length=225)
-    company = models.CharField(max_length=225)
+    first_name = models.CharField(max_length=225)
+    last_name = models.CharField(max_length=225, **nb)
+    company = models.CharField(max_length=225, **nb)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=11, **nb)
     job_title = models.CharField(max_length=128, **nb)
@@ -28,4 +29,4 @@ class Contact(BaseModel):
     last_interaction = models.DateTimeField(**nb)
 
     def __str__(self):
-        return f'{self.full_name}'
+        return f'{self.first_name} {self.last_name}'
