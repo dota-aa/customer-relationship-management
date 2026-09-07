@@ -25,10 +25,10 @@ environ.Env.read_env(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2i%wcny(c0gnske5&djb1i86@#hm$n+ee2=6%0el&)ou(v##90'
+SECRET_KEY = env('SECRET_KEY', default='your-django-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = []
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     # Third party Apps
     'rest_framework',
+    'django_filters',
 
     # core
     'core.apps.CoreConfig',
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'apps.leads.apps.LeadsConfig',
     'apps.contacts.apps.ContactsConfig',
     'apps.deals.apps.DealsConfig',
+    'apps.notes.apps.NotesConfig',
 
 ]
 
