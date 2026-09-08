@@ -22,9 +22,9 @@ class NoteCategory(BaseModel):
 
 class Note(BaseModel):
     class NotePriority(models.TextChoices):
-        LOW = 'low', 'Low'
-        MEDIUM = 'medium', 'Medium'
-        HIGH = 'high', 'High'
+        LOW = 'low', 'Low priority'
+        MEDIUM = 'medium', 'Medium priority'
+        HIGH = 'high', 'High priority'
 
     title = models.CharField(max_length=128)
     content = models.TextField(**nb)

@@ -53,6 +53,18 @@ class NoteViewSet(ModelViewSet):
 
     ordering = ['-pinned', '-created_at']
 
+    def get_queryset(self):
+        queryset = Note.objects.select_related(
+            'category',
+            'lead',
+            'contact',
+            'deal',
+            'created_by',
+        ).filter(
+            created_by=self.request.user
+        )
+        return queryset
+
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
@@ -91,3 +103,52 @@ class NoteViewSet(ModelViewSet):
         return Response(
             data=self.serializer_class(instance).data
         )
+
+    @action(methods=['get'], detail=False, url_path='summary')
+    def summary(self, request):
+        queryset = self.get_queryset()
+        data = {
+            "categories_used": queryset.values('category').distinct().count(),
+            "total_notes": queryset.count(),
+            "pinned_notes": queryset.filter(pinned=True).count(),
+            "archived_notes": queryset.filter(archived=True).count(),
+        }
+        return Response(data=data)
+
+    @action(methods=['get'], detail=False, url_path='options')
+    def available_options(self, request):
+        categories_qs = NoteCategory.objects.all()
+
+        data = {
+            'categories': NoteCategorySerializer(instance=categories_qs, many=True).data,
+            'priority': [
+                {
+                    "value": value,
+                    "label": label
+                }
+                for value, label in Note.NotePriority.choices
+            ],
+            'statuses': {
+                'pinned': [
+                    {
+                        'value': 'True',
+                        'label': 'Pinned',
+                    },
+                    {
+                        'value': 'False',
+                        'label': 'Not Pinned'
+                    }
+                ],
+                'archived': [
+                    {
+                        'value': 'True',
+                        'label': 'archived',
+                    },
+                    {
+                        'value': 'False',
+                        'label': 'Active'
+                    }
+                ]
+            },
+        }
+        return Response(data=data)
