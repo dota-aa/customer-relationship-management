@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'apps.contacts.apps.ContactsConfig',
     'apps.deals.apps.DealsConfig',
     'apps.notes.apps.NotesConfig',
+    'apps.notifications.apps.NotificationsConfig',
 
 ]
 

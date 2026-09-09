@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/contacts/', include('apps.contacts.urls', namespace='contacts')),
     path('api/deals/', include('apps.deals.urls', namespace='deals')),
     path('api/', include('apps.notes.urls', namespace='notes')),
+    path('api/', include('apps.notifications.urls', namespace='notifications')),
 ]
 
 
