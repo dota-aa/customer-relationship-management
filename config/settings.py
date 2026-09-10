@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'apps.deals.apps.DealsConfig',
     'apps.notes.apps.NotesConfig',
     'apps.notifications.apps.NotificationsConfig',
+    'apps.dashboard.apps.DashboardConfig',
 
 ]
 
