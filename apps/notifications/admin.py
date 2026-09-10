@@ -4,7 +4,8 @@ from .models import Notification, NotificationSettings
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'message', 'source_type', 'source_id')
+    list_display = ('user', 'title', 'message', 'source_type', 'source_id', 'is_read', 'created_at')
+    readonly_fields = ('id', 'created_at')
 
 
 @admin.register(NotificationSettings)

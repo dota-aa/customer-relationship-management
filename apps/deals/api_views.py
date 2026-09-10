@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Deal
 from .serializers import DealSerializer
 from core.pagination import StandardPagination
+from apps.notifications.services import NotificationPayLoad, set_notification
 
 
 class DealViewSet(ModelViewSet):
@@ -43,5 +44,37 @@ class DealViewSet(ModelViewSet):
     ordering = ['-created_at']
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        deal = serializer.save(created_by=self.request.user)
+        payload = NotificationPayLoad(
+            user_id=self.request.user.id,
+            title='New Deal',
+            message=f'a new deal has been added.',
+            type='new_deal',
+            source_type=f'{deal.__class__}',
+            source_id=deal.id,
+        )
+        set_notification(payload)
 
+    def perform_update(self, serializer):
+        deal = serializer.save()
+        if deal.stage == 'deal_won':
+            payload = NotificationPayLoad(
+                user_id=self.request.user.id,
+                title='Deal Won',
+                message=f'You won the DEAL.',
+                type='deal_won',
+                source_type=f'{deal.__class__}',
+                source_id=deal.id,
+            )
+            set_notification(payload)
+
+        elif deal.stage == 'deal_lost':
+            payload = NotificationPayLoad(
+                user_id=self.request.user.id,
+                title='Deal Lost',
+                message=f'You Lost the DEAL.',
+                type='lost_deal',
+                source_type=f'{deal.__class__}',
+                source_id=deal.id,
+            )
+            set_notification(payload)

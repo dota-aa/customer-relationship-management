@@ -1,0 +1,26 @@
+{% extends 'mailing/base_email.html' %}
+
+
+{% block content %}
+
+        <div class="email-container">
+        <table class="email-card" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="email-card__header">
+                    <h1>{{ title }}</h1>
+                </td>
+            </tr>
+            <tr>
+                <td class="email-card__body">
+                    <p>{{ notification }}</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="email-card__footer">
+                    <p>© ۲۰۲۶ تمامی حقوق محفوظ است.</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+{% endblock %}
