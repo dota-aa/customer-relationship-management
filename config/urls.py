@@ -12,7 +12,7 @@ urlpatterns = [
     path('api/deals/', include('apps.deals.urls', namespace='deals')),
     path('api/', include('apps.notes.urls', namespace='notes')),
     path('api/', include('apps.notifications.urls', namespace='notifications')),
-    path('api/', include('apps.dashboard.urls', namespace='dashboard')),
+    path('api/activity/', include('apps.dashboard.urls', namespace='dashboard')),
 ]
 
 

@@ -4,5 +4,6 @@ from . import api_views
 
 app_name = 'dashboard'
 urlpatterns = [
-    path('activities/', api_views.ActivityLogListView.as_view())
+    path('', api_views.ActivityLogListView.as_view()),
+    path('export/', api_views.ActivityLogExportView.as_view())
 ]
