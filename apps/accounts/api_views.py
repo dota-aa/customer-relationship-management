@@ -7,6 +7,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.db import transaction
 
+
 from .serializers import (
     UserSerializer,
     UserRegisterSerializer,
@@ -29,6 +30,7 @@ from .selectors import (
     get_profile_for_update
 )
 from core.pagination import StandardPagination
+from apps.dashboard.services import ActivityLogPayLoad, log_activity
 
 
 class UserRegisterView(APIView):
@@ -87,6 +89,14 @@ class UserChangePasswordView(APIView):
         serializer = ChangePasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         change_user_password(user=request.user, password=serializer.validated_data['new_password'])
+
+        payload = ActivityLogPayLoad(
+            request=request,
+            activity_type='password_change',
+            description='You changed your password',
+        )
+        log_activity(payload)
+
         return Response(data={'message': 'password changed successfully.'})
 
 
@@ -182,6 +192,14 @@ class ResetPasswordView(APIView):
         validation_result = validate_user_token(uidb64=vd['uidb64'], token=vd['token'])
         if validation_result.is_valid:
             change_user_password(user=validation_result.user, password=vd['new_password'])
+
+            payload = ActivityLogPayLoad(
+                request=request,
+                activity_type='password_change',
+                description='You changed your password',
+            )
+            log_activity(payload)
+
             return Response(data={'message': 'password changed successfully.'}, status=status.HTTP_200_OK)
         return Response(data={'error': 'invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -204,6 +222,14 @@ class UserProfileView(APIView):
             serializer = UserProfileSerializer(instance=profile, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+
+        payload = ActivityLogPayLoad(
+            request=request,
+            activity_type='profile_update',
+            description='You updated your profile',
+        )
+        log_activity(payload)
+
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 

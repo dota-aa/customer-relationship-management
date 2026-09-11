@@ -5,6 +5,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from django.utils import timezone
 
+from utils.texts import time_string_format
+
 
 class EmailPayload(BaseModel):
     subject: str
@@ -25,7 +27,7 @@ class EmailPayload(BaseModel):
 
 def send_email(payload: EmailPayload) -> None:
     html_content = loader.render_to_string(payload.template_name, context=payload.context)
-    timestamp = timezone.now().strftime("%b %d, %H:%M:%S")
+    timestamp = timezone.now().strftime(time_string_format)
     email = EmailMultiAlternatives(
         subject=f'{payload.subject} - {timestamp}',
         body=payload.body,

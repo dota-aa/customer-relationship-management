@@ -10,7 +10,7 @@ class User(AbstractUser):
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.username}-{self.email}'
+        return f'{self.username}'
 
 
 class Profile(models.Model):

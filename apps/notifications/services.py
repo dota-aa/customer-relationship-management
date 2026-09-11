@@ -28,16 +28,14 @@ def set_notification(payload: NotificationPayLoad):
     user = User.objects.get(id=payload.user_id)
     settings, _ = NotificationSettings.objects.get_or_create(user=user)
 
-    if not settings.push_notification:
-        """
-        User doesn't want notification.
-        """
-        return None
+    print('checking user settings to send email ...')
 
-    if settings.email_notification:
+    if settings.email_notification and payload.type.value == 'activity':
         """
         Send Email to user
         """
+        print('sending email . . .')
+
         email_payload = EmailPayload(
             subject=payload.title,
             body=payload.message,
@@ -50,6 +48,12 @@ def set_notification(payload: NotificationPayLoad):
             receivers=[user.email],
         )
         send_email(email_payload)
+
+    if not settings.push_notification:
+        """
+        User doesn't want notification.
+        """
+        return None
 
     if not getattr(settings, payload.type.value, True):
         """

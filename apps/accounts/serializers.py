@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth.signals import user_logged_in
 
 from .models import User, Profile
 from .validators import validate_avatar, process_image
@@ -49,6 +50,22 @@ class UserRegisterSerializer(serializers.Serializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        """
+        User logged in, fire signal
+        """
+        data = super().validate(attrs)
+
+        request = self.context.get("request")
+        request.user = self.user
+
+        user_logged_in.send(
+            sender=self.user.__class__,
+            request=request,
+            user=self.user
+        )
+        return data
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)

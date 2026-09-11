@@ -18,6 +18,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Notification, NotificationSettings
 from .serializers import NotificationSerializer, NotificationSettingsSerializer
 from core.pagination import MediumPagination
+from apps.dashboard.services import log_activity, ActivityLogPayLoad
 
 class NotificationListView(APIView):
     """
@@ -197,3 +198,14 @@ class NotificationSettingsRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         settings, _ = NotificationSettings.objects.get_or_create(user=self.request.user)
         return settings
+
+    def update(self, request, *args, **kwargs):
+
+        payload = ActivityLogPayLoad(
+            request=request,
+            activity_type='notification_update',
+            description='You updated your notification settings',
+        )
+        log_activity(payload)
+
+        return super().update(request, *args, **kwargs)
