@@ -1,10 +1,15 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.signals import user_logged_in
+from django.core.cache import cache
 
 from .models import User, Profile
 from .validators import validate_avatar, process_image
 from utils.bucket import bucket
+
+
+S3_LINK_EXPIRATION = 12 * 60 * 60
+CACHE_TIMEOUT = S3_LINK_EXPIRATION - 3600
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -125,15 +130,26 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
+        cache_key = f'accounts:profile:avatar:{instance.avatar.name}'
         delete_image = validated_data.pop('delete_image', False)
         new_image = validated_data.get('avatar')  # the source of image field == avatar
 
         if instance.avatar and delete_image:
+            """
+            Delete avatar from both s3 object storage and database
+            Delete cache
+            """
             instance.avatar.delete(save=False)  # Delete from s3 object storage to prevent orphanage files
             instance.avatar = None  # it will be saved later by the super method
+            cache.delete(key=cache_key)
 
         elif new_image and instance.avatar and new_image != instance.avatar:
+            """
+            Delete the previous avatar from s3 object storage and cache
+            The image path in database will be updated.
+            """
             instance.avatar.delete(save=False)
+            cache.delete(key=cache_key)
 
         return super().update(instance, validated_data)
 
@@ -141,6 +157,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return UserSerializer(instance=obj.user).data  # serialize
 
     def get_image_path(self, obj):
+        avatar = None
         if obj.avatar:
-            return bucket.generate_download_url(key=obj.avatar.name, expiration=86400)
-        return None
+            cache_key = f'accounts:profile:avatar:{obj.avatar.name}'
+            avatar = cache.get(key=cache_key)
+
+            if not avatar:
+                try:
+                    avatar = bucket.generate_download_url(key=obj.avatar.name, expiration=S3_LINK_EXPIRATION)
+                    cache.set(key=cache_key, value=avatar, timeout=CACHE_TIMEOUT)
+                except Exception as e:
+                    print(e)
+        return avatar
