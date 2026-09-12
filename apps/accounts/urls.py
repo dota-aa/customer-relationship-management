@@ -11,6 +11,7 @@ jwt_urlpatterns = [
     path('login/', api_views.CustomTokenObtainView.as_view()),
     path('refresh/', TokenRefreshView.as_view()),
     path('me/', api_views.UserProfileView.as_view()),
+    path('me/delete-profile-image/', api_views.UserProfileImageDeleteView.as_view()),
     path('change-password/', api_views.UserChangePasswordView.as_view()),
     path('reset-password/', api_views.ForgotPasswordView.as_view()),
     path('reset-password/verify/<uidb64>/<token>/', api_views.CheckResetPasswordTokenView.as_view()),

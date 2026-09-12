@@ -233,6 +233,17 @@ class UserProfileView(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
+class UserProfileImageDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        profile = request.user.profile
+        profile.avatar.delete(save=False)
+        profile.avatar = None
+        profile.save()
+        return Response(data={'message': 'profile image deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+
 class UserManagementView(viewsets.GenericViewSet):
     permission_classes = [IsAdminUser]
     queryset = get_users()

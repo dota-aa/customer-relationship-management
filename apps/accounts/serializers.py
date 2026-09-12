@@ -104,6 +104,11 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    """
+    image: the field to upload an image
+    image_path: the object storage presigned url
+    delete_image(bool): if true delete the current profile image
+    """
     user_info = serializers.SerializerMethodField()
     image = serializers.ImageField(source='avatar', write_only=True, required=False)
     image_path = serializers.SerializerMethodField(read_only=True)
